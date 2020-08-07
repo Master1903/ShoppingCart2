@@ -1,2 +1,2 @@
-# ShoppingCart2
+# ShoppingCartApp
 Shopping Cart Test Application !
