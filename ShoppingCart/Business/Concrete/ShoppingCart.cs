@@ -1,10 +1,8 @@
 ﻿using ConsoleTables;
 using ShoppingCart.Business.Abstract;
 using ShoppingCart.Domain;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ShoppingCart
 {
@@ -20,7 +18,6 @@ namespace ShoppingCart
         private double campaignDiscount = 0;
         private double cartTotalAmount = 0;
         private double cartTotalAmountAfterDiscounts = 0;
-
 
         public ShoppingCart(IDeliveryCostCalculator deliveryCostCalculator)
         {
@@ -60,6 +57,7 @@ namespace ShoppingCart
             campaigns = new List<Campaign>();
             campaigns.AddRange(discounts);
         }
+
         public void ApplyCoupon(Coupon _coupon)
         {
             coupon = _coupon;
@@ -68,6 +66,7 @@ namespace ShoppingCart
         {
             if (coupon == null)
                 return;
+
 
             if (campaigns == null)
                 cartTotalAmountAfterDiscounts = cartTotalAmount;
@@ -96,38 +95,45 @@ namespace ShoppingCart
 
             foreach (Campaign campaign in campaigns)
             {
-                // İndirim uygulanacak kategorinin ürünlerini getir
                 Dictionary<string, Product> productsByCategory = GetProductsByCategory(campaign.Category);
 
                 int totalQuantityByCategory = productsByCategory.Sum(x => x.Value.Quantity);
                 double totalPriceByCategory = productsByCategory.Sum(x => x.Value.UnitPrice * x.Value.Quantity);
 
-                // sepetimdeki ürün miktarı, kampayadaki tanımlı minimimum ürün miktarından fazlaysa indirim uygula
                 if (totalQuantityByCategory > campaign.MinProductQuantity)
                 {
-                    if (campaign.DiscountType == Domain.Enums.DiscountType.Rate)
+                    calculatedDiscount = campaign.CalculateCampaignDiscount(campaign, totalPriceByCategory);
+
+                    if (calculatedDiscount > maxDiscount)
                     {
-                        calculatedDiscount = totalPriceByCategory * campaign.DiscountAmount / 100;
-                        if (calculatedDiscount > maxDiscount)
-                        {
-                            maxDiscount = calculatedDiscount;
-                            campaignProduct = productsByCategory;
-                        }
+                        maxDiscount = calculatedDiscount;
+                        campaignProduct = productsByCategory;
                     }
-                    else if (campaign.DiscountType == Domain.Enums.DiscountType.Amount)
-                    {
-                        if (campaign.DiscountAmount > maxDiscount)
-                        {
-                            maxDiscount = campaign.DiscountAmount;
-                            campaignProduct = productsByCategory;
-                        }
-                    }
+
+                    //if (campaign.DiscountType == Domain.Enums.DiscountType.Rate)
+                    //{
+                    //    calculatedDiscount = totalPriceByCategory * campaign.DiscountAmount / 100;
+                    //    if (calculatedDiscount > maxDiscount)
+                    //    {
+                    //        maxDiscount = calculatedDiscount;
+                    //        campaignProduct = productsByCategory;
+                    //    }
+                    //}
+                    //else if (campaign.DiscountType == Domain.Enums.DiscountType.Amount)
+                    //{
+                    //    if (campaign.DiscountAmount > maxDiscount)
+                    //    {
+                    //        maxDiscount = campaign.DiscountAmount;
+                    //        campaignProduct = productsByCategory;
+                    //    }
+                    //}
                 }
             }
             ApplyCampaignDiscountToProductCategory(campaignProduct, maxDiscount);
             campaignDiscount = maxDiscount;
             cartTotalAmountAfterDiscounts -= maxDiscount;
         }
+
         public string Print()
         {
             var tableDetail = new ConsoleTable("Category", "Product", "Quantity", "Unit Price", "Total Price", "Total Discount(coupon, campaign)");
@@ -154,6 +160,22 @@ namespace ShoppingCart
 
             discountedProducts.Values.ToList().ForEach(x => x.Category.CalculatedTotalDiscount = discountAmount);
         }
+
+        //private void CalculateDiscountedOfProduct(Dictionary<string, Product> discountedProducts, double discountAmount, Domain.Enums.DiscountType discountType)
+        //{
+        //    if (discountedProducts == null || discountedProducts == null)
+        //        return;
+
+        //    discountedProducts.Values.ToList()
+        //        .ForEach(x =>
+        //    {
+
+        //        if (discountType == Domain.Enums.DiscountType.Rate)
+        //            x.DiscountedPrice = x.Quantity * x.UnitPrice * discountAmount / 100;
+        //        else
+        //            x.DiscountedPrice = discountAmount;
+        //    });
+        //}
     }
 
 

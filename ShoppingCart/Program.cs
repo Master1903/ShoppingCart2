@@ -1,4 +1,5 @@
-﻿using ShoppingCart.Domain;
+﻿using ShoppingCart.Business.Concrete;
+using ShoppingCart.Domain;
 using ShoppingCart.Domain.Enums;
 using System;
 
@@ -11,10 +12,12 @@ namespace ShoppingCart
 
             ShoppingCart cart = new ShoppingCart(new DeliveryCostCalculate(5, 2, 2.99));
 
+
+
             //Add Category
             Category categoryFood = new Category("Food");
             Category categorySport = new Category("Sport");
-            Category categoryBasketball = new Category("Basketball Boots");
+            //Category categoryBasketball = new Category("Basketball Boots");
 
             //Food Product
             Product banana = new Product("Banana", 20, categoryFood);
@@ -32,9 +35,9 @@ namespace ShoppingCart
             cart.AddItem(apricot, 2);
 
             //campanign
-            Campaign campaign1 = new Campaign(categorySport, 20, 2, DiscountType.Rate);
-            Campaign campaign2 = new Campaign(categorySport, 25, 2, DiscountType.Amount);
-            Campaign campaign3 = new Campaign(categoryFood, 50, 2, DiscountType.Rate);
+            Campaign campaign1 = new Campaign(categorySport, 20, 2, new DiscountTypeRate { });
+            Campaign campaign2 = new Campaign(categorySport, 40, 2, new DiscountTypeAmount { });
+            Campaign campaign3 = new Campaign(categoryFood, 50, 2, new DiscountTypeRate { });
 
             cart.ApplyDiscounts(campaign1, campaign2, campaign3);
 

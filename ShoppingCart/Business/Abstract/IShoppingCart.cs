@@ -18,7 +18,5 @@ namespace ShoppingCart.Business.Abstract
         void ApplyDiscounts(params Campaign[] discounts);
         void ApplyCoupon(Coupon coupon);
         IDictionary<string, Product> Products { get; set; }
-
-
     }
 }

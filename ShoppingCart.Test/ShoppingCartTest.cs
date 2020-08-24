@@ -1,5 +1,6 @@
 using Moq;
 using ShoppingCart.Business.Abstract;
+using ShoppingCart.Business.Concrete;
 using ShoppingCart.Domain;
 using ShoppingCart.Domain.Enums;
 using System;
@@ -34,9 +35,9 @@ namespace ShoppingCart.Test
             apple = new Product("apple", 2, food);
 
             //campaign
-            campaign1 = new Campaign(fashion, 50, 3, DiscountType.Rate);
-            campaign2 = new Campaign(fashion, 40, 5, DiscountType.Amount);
-            campaign3 = new Campaign(food, 10, 20, DiscountType.Rate);
+            campaign1 = new Campaign(fashion, 50, 3, new DiscountTypeRate() { });
+            campaign2 = new Campaign(fashion, 40, 5, new DiscountTypeAmount() { });
+            campaign3 = new Campaign(food, 10, 20, new DiscountTypeRate() { });
 
         }
 

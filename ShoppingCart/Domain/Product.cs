@@ -11,6 +11,9 @@ namespace ShoppingCart
         public double UnitPrice { get; set; }
         public Category Category { get; set; }
         public int Quantity { get; set; }
+
+        //public double TotalPrice => Quantity * UnitPrice - DiscountedPrice; 
+        //public double DiscountedPrice { get; set; }
         public double TotalPrice => Quantity * UnitPrice - Category.CalculatedTotalDiscount;
 
         public Product(string title, double unitPrice, Category category)
